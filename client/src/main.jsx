@@ -12,9 +12,9 @@ import "/node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <Container maxWidth="lg" sx={{ textAlign: "center", marginTop: "50px" }}>
-      <RouterProvider router={router}></RouterProvider>
-    </Container>
-  </React.StrictMode>
+  // <React.StrictMode>
+  <Container maxWidth="lg" sx={{ textAlign: "center", marginTop: "50px" }}>
+    <RouterProvider router={router}></RouterProvider>
+  </Container>
+  // </React.StrictMode>
 );

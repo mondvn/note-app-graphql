@@ -1,19 +1,17 @@
 import { Card, CardContent, Grid, List, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { useState } from "react";
-import { Link, Outlet, useParams } from "react-router-dom";
+import { Link, Outlet, useParams, useLoaderData } from "react-router-dom";
 
 function NoteList() {
   console.log("Re-rendering NoteList");
   const { noteId } = useParams();
+  const { folder } = useLoaderData();
+
+  console.log("[NodeList]: ", { folder });
+
   const [activeNoteId, setActiveNoteId] = useState();
-  const folder = {
-    notes: [
-      { id: 1, content: "<p>This is new Note</p>" },
-      { id: 2, content: "<p>This is 2nd Note</p>" },
-      { id: 3, content: "<p>This is 3rd Note</p>" },
-    ],
-  };
+
   return (
     <Grid
       container
@@ -49,7 +47,12 @@ function NoteList() {
                 style={{ textDecoration: "none" }}
                 onClick={() => setActiveNoteId(id)}
               >
-                <Card sx={{ mb: "5px", bgcolor: +id === +activeNoteId ? "rgb(255,211,140)" : null }} >
+                <Card
+                  sx={{
+                    mb: "5px",
+                    bgcolor: id === activeNoteId ? "rgb(255,211,140)" : null,
+                  }}
+                >
                   <CardContent
                     sx={{ padding: "10px", "&:last-child": { pb: "10px" } }}
                   >

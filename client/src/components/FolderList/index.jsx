@@ -39,7 +39,7 @@ function FolderList({ folders }) {
             <Card
               sx={{
                 mb: "8px",
-                bgcolor: +id === +activeFolderId ? "rgb(255,211,140)" : null,
+                bgcolor: id === activeFolderId ? "rgb(255,211,140)" : null,
               }}
             >
               <CardContent

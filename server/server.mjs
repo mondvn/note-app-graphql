@@ -2,7 +2,7 @@ import express from "express"
 import http from "http"
 import { ApolloServer } from "@apollo/server"
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer'
-import { expressMiddleware} from '@apollo/server/express4'
+import { expressMiddleware } from '@apollo/server/express4'
 import bodyParser from "body-parser"
 import cors from 'cors'
 
@@ -24,7 +24,8 @@ const typeDefs = `#graphql
     id: String,
     name: String,
     createdAt: String,
-    author: Author
+    author: Author,
+    notes: [Note]
   }
 
   type Author {
@@ -33,8 +34,15 @@ const typeDefs = `#graphql
 
   }
 
+  type Note {
+    id: String,
+    content: String
+  }
+
   type Query {
-    folders: [Folder]
+    folders: [Folder],
+    folder(folderId: String): Folder 
+    note(noteId: String): Note
   }
 `
 /** Resolver - Xử lý dữ liệu và trả dữ liệu về cho phía client dựa theo query mà client gửi lên
@@ -42,10 +50,26 @@ const typeDefs = `#graphql
  */
 const resolvers = {
   Query: {
-    folders: () => {return fakeData.folders},
+    folders: () => { return fakeData.folders },
+    folder: (parent, args) => {
+      const folderId = args.folderId
+      return fakeData.folders.find(folders => folders.id === folderId)
+    },
+    note: (parent, args) => {
+      const noteId = args.noteId
+      return fakeData.notes.find (note => note.id === noteId)
+    }
   },
   Folder: {
-    author: () => {return {id: 1, name: 'Hello World'}}
+    author: (parent, args) => {
+      console.log({ parent, args })
+      const authorId = parent.authorId
+      return fakeData.authors.find(author => author.id === authorId)
+    },
+    notes: (parent, args) => {
+      console.log({ parent })
+      return fakeData.notes.filter(note => note.folderId === parent.id) 
+    }
   }
 }
 
@@ -61,5 +85,5 @@ await server.start()
 
 app.use(cors(), bodyParser.json(), expressMiddleware(server))
 
-await new Promise((resolve) => httpServer.listen({port: 4000}, resolve))
+await new Promise((resolve) => httpServer.listen({ port: 4000 }, resolve))
 console.log('Server listening on port: 4000')

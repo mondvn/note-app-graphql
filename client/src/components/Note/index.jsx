@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useLoaderData } from "react-router-dom";
 import {
   EditorState,
   convertFromHTML,
@@ -10,10 +11,11 @@ import draftToHTML from "draftjs-to-html";
 
 function Note() {
   console.log("Re-rendering Note");
-  const note = {
-    id: 1,
-    content: "<p>This is first note</p>",
-  };
+  const { note } = useLoaderData();
+  // const note = {
+  //   id: 1,
+  //   content: "<p>This is first note</p>",
+  // };
 
   const [editorState, setEditorState] = useState(() => {
     return EditorState.createEmpty();
