@@ -5,8 +5,10 @@ import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHt
 import { expressMiddleware } from '@apollo/server/express4'
 import bodyParser from "body-parser"
 import cors from 'cors'
+import mongoose from 'mongoose'
 
 import fakeData from "./fakeData/index.js"
+import 'dotenv/config'
 
 const app = express()
 const httpServer = http.createServer(app)
@@ -45,8 +47,8 @@ const typeDefs = `#graphql
     note(noteId: String): Note
   }
 `
-/** Resolver - Xử lý dữ liệu và trả dữ liệu về cho phía client dựa theo query mà client gửi lên
- * 
+/** Resolver - Xử lý dữ liệu và trả dữ liệu về cho phía client
+ *  dựa theo query mà client gửi lên
  */
 const resolvers = {
   Query: {
@@ -57,7 +59,7 @@ const resolvers = {
     },
     note: (parent, args) => {
       const noteId = args.noteId
-      return fakeData.notes.find (note => note.id === noteId)
+      return fakeData.notes.find(note => note.id === noteId)
     }
   },
   Folder: {
@@ -68,12 +70,14 @@ const resolvers = {
     },
     notes: (parent, args) => {
       console.log({ parent })
-      return fakeData.notes.filter(note => note.folderId === parent.id) 
+      return fakeData.notes.filter(note => note.folderId === parent.id)
     }
   }
 }
 
-
+// Connect to database
+const URI = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.hdv0jrt.mongodb.net/?retryWrites=true&w=majority`
+const PORT = process.env.PORT || 4000
 const server = new ApolloServer({
   typeDefs,
   resolvers,
@@ -85,5 +89,12 @@ await server.start()
 
 app.use(cors(), bodyParser.json(), expressMiddleware(server))
 
-await new Promise((resolve) => httpServer.listen({ port: 4000 }, resolve))
-console.log('Server listening on port: 4000')
+mongoose.set('strictQuery', false)
+mongoose.connect(URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+}).then(async () => {
+  console.log('Connected to DB')
+  await new Promise((resolve) => httpServer.listen({ port: PORT }, resolve))
+  console.log('Server listening on port: 4000')
+})
