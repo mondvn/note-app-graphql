@@ -25,7 +25,6 @@ export const notesLoader = async ({ params: { folderId } }) => {
   });
 
   const { data } = await res.json();
-  console.log("[Node List]", { data });
   return data;
 };
 
@@ -52,6 +51,5 @@ export const noteLoader = async ({ params: { noteId } }) => {
   });
 
   const { data } = await res.json();
-  console.log("[Node List]", { data });
   return data;
 };
