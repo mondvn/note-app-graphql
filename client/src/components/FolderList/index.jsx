@@ -3,6 +3,8 @@ import { Box } from "@mui/system";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
+import NewFolder from "../NewFolder";
+
 function FolderList({ folders }) {
   console.log("Re-rendering FolderList...");
   const { folderId } = useParams();
@@ -19,10 +21,11 @@ function FolderList({ folders }) {
         overflowY: "auto",
       }}
       subheader={
-        <Box>
+        <Box sx={{display: "flex", alignItems: "center", justifyContent: "space-between"}}>
           <Typography sx={{ fontWeight: "bold", color: "White", mb: "8px" }}>
             Folders
           </Typography>
+          <NewFolder />
         </Box>
       }
     >

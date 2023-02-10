@@ -1,5 +1,5 @@
 import fakeData from "../fakeData/index.js"
-import { FolderModel } from "../models/index.js"
+import { AuthorModel, FolderModel } from "../models/index.js"
 
 
 /** Resolver - Xử lý dữ liệu và trả dữ liệu về cho phía client
@@ -8,10 +8,11 @@ import { FolderModel } from "../models/index.js"
 
 export const resolvers = {
   Query: {
-    folders: async () => {
-      const folders = await FolderModel.find()
+    folders: async (parent, args, context) => {
+      const folders = await FolderModel
+        .find({ authorId: context.uid })
+        .sort({ updatedAt: 'desc' })
       return folders
-      //  return fakeData.folders 
     },
     folder: async (parent, args) => {
       const folderId = args.folderId
@@ -26,20 +27,32 @@ export const resolvers = {
     }
   },
   Folder: {
-    author: (parent, args) => {
+    author: async (parent, args) => {
       const authorId = parent.authorId
-      return fakeData.authors.find(author => author.id === authorId)
+      const author = await AuthorModel.findOne({
+        uid: authorId
+      })
+      return author
     },
     notes: (parent, args) => {
       return fakeData.notes.filter(note => note.folderId === parent.id)
     }
   },
   Mutation: {
-    addFolder: async (parent, args) => {
-      const newFolder = new FolderModel({ ...args, authorId: '123' });
+    addFolder: async (parent, args, context) => {
+      const newFolder = new FolderModel({ ...args, authorId: context.uid });
       console.log(newFolder)
       await newFolder.save()
       return newFolder
+    },
+    register: async (parent, args) => {
+      const foundUser = await AuthorModel.findOne({ uid: args.uid })
+      if (!foundUser) {
+        const newUser = new AuthorModel(args)
+        await newUser.save()
+        return newUser
+      }
+      return foundUser
     }
   }
 }
