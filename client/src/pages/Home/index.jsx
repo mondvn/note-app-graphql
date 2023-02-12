@@ -3,6 +3,7 @@ import { Box } from "@mui/system";
 import UserMenu from "../../components/UserMenu";
 import FolderList from "../../components/FolderList";
 import { Outlet, useLoaderData } from "react-router-dom";
+import PushNotification from "../../components/PushNotification";
 function Home() {
   console.log("Re-rendering Home Page")
   const {folders} = useLoaderData()
@@ -13,6 +14,7 @@ function Home() {
       </Typography>
       <Box sx={{ display: "flex", justifyContent: "right", mb: "10px" }}>
         <UserMenu />
+        <PushNotification />
       </Box>
 
       <Grid
