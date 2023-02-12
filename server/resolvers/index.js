@@ -1,5 +1,5 @@
 import fakeData from "../fakeData/index.js"
-import { AuthorModel, FolderModel } from "../models/index.js"
+import { AuthorModel, FolderModel, NoteModel } from "../models/index.js"
 
 
 /** Resolver - Xử lý dữ liệu và trả dữ liệu về cho phía client
@@ -16,14 +16,15 @@ export const resolvers = {
     },
     folder: async (parent, args) => {
       const folderId = args.folderId
-      const foundFolder = await FolderModel.findOne({
-        _id: folderId
-      })
+      const foundFolder = await FolderModel.findById(folderId)
       return foundFolder
     },
-    note: (parent, args) => {
+    note: async (parent, args) => {
       const noteId = args.noteId
-      return fakeData.notes.find(note => note.id === noteId)
+      const note = await NoteModel.findById(noteId)
+
+      return note
+      // return fakeData.notes.find(note => note.id === noteId)
     }
   },
   Folder: {
@@ -34,8 +35,11 @@ export const resolvers = {
       })
       return author
     },
-    notes: (parent, args) => {
-      return fakeData.notes.filter(note => note.folderId === parent.id)
+    notes: async (parent, args) => {
+      const notes = await NoteModel.find({
+        folderId: parent.id
+      })
+      return notes
     }
   },
   Mutation: {
@@ -44,6 +48,11 @@ export const resolvers = {
       console.log(newFolder)
       await newFolder.save()
       return newFolder
+    },
+    addNote: async (parent, args) => {
+      const newNote = new NoteModel(args);
+      await newNote.save()
+      return newNote
     },
     register: async (parent, args) => {
       const foundUser = await AuthorModel.findOne({ uid: args.uid })
