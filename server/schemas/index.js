@@ -6,6 +6,8 @@
  * Subscription muốn update theo dạng realtime
  */
 export const typeDefs = `#graphql
+ scalar Date 
+ 
  type Folder {
    id: String!,
    name: String,
@@ -22,7 +24,8 @@ export const typeDefs = `#graphql
 
  type Note {
    id: String!,
-   content: String
+   content: String,
+   updatedAt: Date
  }
 
  type Query {

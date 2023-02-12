@@ -8,6 +8,7 @@ export const notesLoader = async ({ params: { folderId } }) => {
       notes {
         content
         id
+        updatedAt
       }
     }
   }`;

@@ -18,6 +18,7 @@ import {
   Tooltip,
 } from "@mui/material";
 import { NoteAddOutlined } from "@mui/icons-material";
+import moment from "moment";
 
 function NoteList() {
   console.log("Re-rendering NoteList");
@@ -32,7 +33,7 @@ function NoteList() {
       setActiveNoteId(noteId);
       return;
     }
- 
+
     if (folder?.notes?.[0]) {
       navigate(`note/${folder.notes[0].id}`);
     }
@@ -86,7 +87,7 @@ function NoteList() {
             </Box>
           }
         >
-          {folder.notes.map(({ id, content }) => {
+          {folder.notes.map(({ id, content, updatedAt }) => {
             return (
               <Link
                 key={id}
@@ -111,7 +112,10 @@ function NoteList() {
                       dangerouslySetInnerHTML={{
                         __html: `${content.substring(0, 30) || "Empty"}`,
                       }}
-                    ></div>
+                    />
+                    <Typography sx={{ fontSize: "10px" }}>
+                      {moment(updatedAt).format("MMMM Do YYYY, h:mm:ss a")}
+                    </Typography>
                   </CardContent>
                 </Card>
               </Link>
