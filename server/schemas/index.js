@@ -28,6 +28,10 @@ export const typeDefs = `#graphql
    updatedAt: Date
  }
 
+ type Message {
+  message: String
+ }
+
  type Query {
    folders: [Folder],
    folder(folderId: String!): Folder 
@@ -38,6 +42,12 @@ export const typeDefs = `#graphql
   addFolder(name: String!): Folder,
   addNote(content: String!, folderId: ID!): Note,
   updateNote(id: String!, content: String!): Note,
-  register(uid: String!, name: String!): Author
+  register(uid: String!, name: String!): Author,
+  pushNotification(content: String): Message,
+ }
+  
+ type Subscription {
+  folderCreated: Message
+  notification: Message
  }
 `
